@@ -114,7 +114,7 @@ class DeletionSystem:
          try:
              subprocess.run(["rm", "-f", path], shell=True, check=True)
              self.deleted_files.append(path)
- except:
+except Exception:
      pass
 
 class TrojanClient:
